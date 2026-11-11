@@ -1,8 +1,10 @@
 import { useId, type InputHTMLAttributes, type ReactNode } from "react";
 import { cn } from "@/lib/cn";
-import { FieldLabel, FieldMessage, controlShell } from "./Field";
+import { FieldLabel, FieldMessage, controlShell, type ControlSize } from "./Field";
 
 export type TextFieldProps = Omit<InputHTMLAttributes<HTMLInputElement>, "size"> & {
+  /** "lg" 44px (default) | "md" 40px. */
+  size?: ControlSize;
   label?: ReactNode;
   /** Helper text under the field. Replaced by `error` when present. */
   helperText?: ReactNode;
@@ -28,6 +30,7 @@ export function TextField({
   leadingIcon,
   trailingIcon,
   prefix,
+  size,
   required,
   readOnly,
   id,
@@ -47,7 +50,7 @@ export function TextField({
           {label}
         </FieldLabel>
       )}
-      <div className={controlShell({ error: !!error, readOnly })}>
+      <div className={controlShell({ error: !!error, readOnly, size })}>
         {leadingIcon && <span className="flex shrink-0 text-text-muted">{leadingIcon}</span>}
         {prefix && (
           <span className="shrink-0 text-sm leading-5 font-medium text-text-secondary">{prefix}</span>

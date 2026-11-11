@@ -53,6 +53,21 @@ export function formatDate(value: Date | string): string {
   return `${get("day")} / ${get("month")} / ${get("year")}`;
 }
 
+const monthYearFmt = new Intl.DateTimeFormat("en-IN", { timeZone: TZ, month: "short", year: "numeric" });
+
+/** Mar 2019 (IST) — e.g. "member since Mar 2019". */
+export function formatMonthYear(value: Date | string): string {
+  return monthYearFmt.format(toDate(value));
+}
+
+/** "Ramesh Kumar Gupta" → "RG" (first + last name), "Priya" → "P". */
+export function initials(name: string): string {
+  const parts = name.replace(/[^\p{L}\s]/gu, " ").trim().split(/\s+/);
+  const first = parts[0]?.[0] ?? "";
+  const last = parts.length > 1 ? parts[parts.length - 1][0] : "";
+  return (first + last).toUpperCase();
+}
+
 /** 10:42 AM (IST) */
 export function formatTime(value: Date | string): string {
   return timeFmt.format(toDate(value)).replace(/\s+/g, " ").toUpperCase();

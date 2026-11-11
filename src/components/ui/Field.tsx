@@ -56,10 +56,22 @@ export function FieldMessage({
  * Shared shell styles for text-like controls (TextField, Select).
  * Default → neutral border; Focused → brand border + focus ring;
  * Error → danger border; Read-only → subtle fill, secondary text.
+ * Size: "lg" 44px (forms, default) | "md" 40px (table toolbars, next to Medium buttons).
  */
-export function controlShell({ error, readOnly }: { error?: boolean; readOnly?: boolean }) {
+export type ControlSize = "lg" | "md";
+
+export function controlShell({
+  error,
+  readOnly,
+  size = "lg",
+}: {
+  error?: boolean;
+  readOnly?: boolean;
+  size?: ControlSize;
+}) {
   return cn(
-    "flex h-11 w-full items-center gap-2 rounded-control border px-3.5 transition-[border-color,box-shadow]",
+    "flex w-full items-center gap-2 rounded-control border transition-[border-color,box-shadow]",
+    size === "md" ? "h-10 px-3" : "h-11 px-3.5",
     readOnly
       ? "border-neutral-border bg-neutral-subtle"
       : "bg-neutral-surface focus-within:shadow-focus",

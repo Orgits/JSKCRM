@@ -22,6 +22,9 @@ Figma: https://www.figma.com/design/ldD74TQj2LSQjkHHZvo6WH
 | Member Login | 3-227 | `src/app/(public)/member-login/page.tsx` |
 | Dashboard | 6-120 | `src/app/(staff)/dashboard/page.tsx` |
 | Members — Register New Member | 11-335 | `src/app/(staff)/members/new/page.tsx` |
+| Members — List | 23-944 | `src/app/(staff)/members/page.tsx` (+ `MembersView.tsx`) |
+| Member Profile — Overview | 24-1126 | not built yet |
+| Member Profile — Passbook | 26-1304 | not built yet |
 
 Frame URL format: `https://www.figma.com/design/ldD74TQj2LSQjkHHZvo6WH?node-id=<node>`
 
@@ -42,7 +45,7 @@ Frame URL format: `https://www.figma.com/design/ldD74TQj2LSQjkHHZvo6WH?node-id=<
 - Figma component → code component (in `src/components/ui/`):
   - Button (Type: Primary | Secondary | Ghost | Accent; Size: Large 48px | Medium 40px) → `Button`
   - Input (State: Default | Focused | Filled | Error | Read-only; label, helper, leading/trailing icon) → `TextField`
-  - Input with chevron → `Select`; Checkbox → `Checkbox`; Radio Option → `RadioOption`
+  - Input with chevron → `Select` (`size="md"` gives the 40px toolbar height, default 44px); Checkbox → `Checkbox`; Radio Option → `RadioOption`
   - Badge (Tone: Success | Warning | Danger | Info | Neutral | Brand) → `Badge`
   - Nav Item → `NavItem`; KPI Card → `KpiCard`; Document Upload (Empty | Uploaded) → `UploadTile`
 - Required field labels end with a red `*` (`text-danger-600`).
@@ -66,12 +69,13 @@ src/
     globals.css, layout.tsx
     (auth)/login/page.tsx, (auth)/login/verify-otp/page.tsx
     (public)/member-login/page.tsx
-    (staff)/layout.tsx, (staff)/dashboard/page.tsx, (staff)/members/new/page.tsx
+    (staff)/layout.tsx, (staff)/dashboard/page.tsx, (staff)/members/page.tsx, (staff)/members/new/page.tsx
   components/
     ui/        Button, TextField, Select, Checkbox, RadioOption, Badge, KpiCard, NavItem, UploadTile
     layout/    Sidebar, TopBar, BrandPanel (login left panel)
   lib/
     format.ts  (currency/date helpers)
+    csv.ts     (client-side CSV download)
     validation/member.ts  (zod schema for registration)
     mock/      (sample members, loans, transactions)
 ```

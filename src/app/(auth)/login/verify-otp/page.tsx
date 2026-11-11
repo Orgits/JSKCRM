@@ -25,7 +25,7 @@ export default function VerifyOtpPage() {
           className="inline-flex items-center gap-1.5 font-semibold text-brand-600 hover:underline"
         >
           <ArrowLeft size={16} strokeWidth={1.6} aria-hidden />
-          Back to login
+          Back to login.
         </Link>
       }
     >

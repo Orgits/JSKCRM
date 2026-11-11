@@ -1,12 +1,14 @@
 import { useId, type ReactNode, type SelectHTMLAttributes } from "react";
 import { ChevronDown } from "lucide-react";
 import { cn } from "@/lib/cn";
-import { FieldLabel, FieldMessage, controlShell } from "./Field";
+import { FieldLabel, FieldMessage, controlShell, type ControlSize } from "./Field";
 import { iconProps } from "./icon";
 
 export type SelectOption = { value: string; label: string; disabled?: boolean };
 
 export type SelectProps = Omit<SelectHTMLAttributes<HTMLSelectElement>, "size"> & {
+  /** "lg" 44px (default) | "md" 40px. */
+  size?: ControlSize;
   label?: ReactNode;
   helperText?: ReactNode;
   error?: ReactNode;
@@ -26,6 +28,7 @@ export function Select({
   placeholder,
   options,
   leadingIcon,
+  size,
   required,
   disabled,
   id,
@@ -49,7 +52,7 @@ export function Select({
           {label}
         </FieldLabel>
       )}
-      <div className={cn(controlShell({ error: !!error, readOnly: disabled }), "relative pr-0")}>
+      <div className={cn(controlShell({ error: !!error, readOnly: disabled, size }), "relative pr-0")}>
         {leadingIcon && <span className="flex shrink-0 text-text-muted">{leadingIcon}</span>}
         <select
           id={selectId}
@@ -59,7 +62,8 @@ export function Select({
           aria-describedby={message ? messageId : undefined}
           defaultValue={props.value === undefined && hasPlaceholder ? "" : undefined}
           className={cn(
-            "h-full min-w-0 flex-1 cursor-pointer appearance-none bg-transparent pr-10 text-sm leading-5 outline-none",
+            "h-full min-w-0 flex-1 cursor-pointer appearance-none bg-transparent text-sm leading-5 outline-none",
+            size === "md" ? "pr-8" : "pr-10",
             "disabled:cursor-default disabled:text-text-secondary",
             hasPlaceholder ? "text-text-primary invalid:text-text-muted" : "text-text-primary",
             className,
@@ -80,7 +84,11 @@ export function Select({
         </select>
         <ChevronDown
           {...iconProps}
-          className="pointer-events-none absolute right-3.5 text-text-muted"
+          size={size === "md" ? 16 : iconProps.size}
+          className={cn(
+            "pointer-events-none absolute text-text-muted",
+            size === "md" ? "right-3" : "right-3.5",
+          )}
         />
       </div>
       {message && (
