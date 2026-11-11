@@ -1,26 +1,124 @@
+/* ============================================================
+   Jai Shri Krishna Society — CRM design tokens (Next.js + Tailwind v4)
+   Matches the Figma variable collection "SKS / Colors". Figma MCP output uses
+   var(--brand-600), var(--text-primary) etc., so names line up 1:1.
+   Fonts come from next/font in src/app/layout.tsx (--font-dm-sans, --font-lora).
+   ============================================================ */
+
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Brand */
+  --brand-900: #0B1A47;
+  --brand-800: #13286E;
+  --brand-700: #1B3594;
+  --brand-600: #2547C9;
+  --brand-500: #4466E8;
+  --brand-100: #DCE4FF;
+  --brand-50:  #EEF2FF;
+
+  /* Accent (saffron) */
+  --accent-600: #D9700F;
+  --accent-500: #F28C28;
+  --accent-50:  #FFF3E6;
+
+  /* Neutrals */
+  --neutral-bg: #F4F6FB;
+  --neutral-surface: #FFFFFF;
+  --neutral-subtle: #F8FAFD;
+  --neutral-border: #E3E8F1;
+  --neutral-border-strong: #CBD3E1;
+
+  /* Text */
+  --text-primary: #0F172A;
+  --text-secondary: #5A647A;
+  --text-muted: #8B94A8;
+  --text-inverse: #FFFFFF;
+
+  /* Sidebar */
+  --sidebar-text: #A9B5D6;
+  --sidebar-divider: #22357A;
+
+  /* Status */
+  --success-600: #138A4B;
+  --success-50:  #E7F6EE;
+  --warning-600: #B26B05;
+  --warning-50:  #FFF4DE;
+  --danger-600:  #D93A3F;
+  --danger-50:   #FDECEC;
+  --info-600:    #0B7FC2;
+  --info-50:     #E5F4FC;
+
+  /* Effects (Figma effect styles) */
+  --shadow-card-value: 0 1px 2px rgba(15, 23, 41, 0.05), 0 8px 24px -6px rgba(15, 23, 41, 0.06);
+  --shadow-elevated-value: 0 2px 6px rgba(15, 23, 41, 0.06), 0 24px 48px -12px rgba(15, 23, 41, 0.16);
+  --focus-ring-value: 0 0 0 4px rgba(37, 71, 201, 0.16);
 }
 
+/* Tailwind utilities from the tokens, e.g. bg-brand-600, text-text-secondary,
+   border-neutral-border, shadow-card, rounded-card, font-serif */
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-brand-900: var(--brand-900);
+  --color-brand-800: var(--brand-800);
+  --color-brand-700: var(--brand-700);
+  --color-brand-600: var(--brand-600);
+  --color-brand-500: var(--brand-500);
+  --color-brand-100: var(--brand-100);
+  --color-brand-50: var(--brand-50);
+
+  --color-accent-600: var(--accent-600);
+  --color-accent-500: var(--accent-500);
+  --color-accent-50: var(--accent-50);
+
+  --color-neutral-bg: var(--neutral-bg);
+  --color-neutral-surface: var(--neutral-surface);
+  --color-neutral-subtle: var(--neutral-subtle);
+  --color-neutral-border: var(--neutral-border);
+  --color-neutral-border-strong: var(--neutral-border-strong);
+
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-muted: var(--text-muted);
+  --color-text-inverse: var(--text-inverse);
+
+  --color-sidebar-text: var(--sidebar-text);
+  --color-sidebar-divider: var(--sidebar-divider);
+
+  --color-success-600: var(--success-600);
+  --color-success-50: var(--success-50);
+  --color-warning-600: var(--warning-600);
+  --color-warning-50: var(--warning-50);
+  --color-danger-600: var(--danger-600);
+  --color-danger-50: var(--danger-50);
+  --color-info-600: var(--info-600);
+  --color-info-50: var(--info-50);
+
+  /* next/font variables are set on <html> in layout.tsx */
+  --font-sans: var(--font-dm-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-serif: var(--font-lora), Georgia, serif;
+
+  --radius-control: 10px;  /* inputs, buttons */
+  --radius-card: 16px;     /* cards */
+  --radius-panel: 20px;    /* login cards */
+
+  --shadow-card: var(--shadow-card-value);
+  --shadow-elevated: var(--shadow-elevated-value);
+  --shadow-focus: var(--focus-ring-value);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+/* Type scale (Figma text styles) — size / line-height / weight
+   Display/Serif 40   40/48 Lora Bold        Heading/H1   28/36 Bold
+   Display/Serif 28   28/36 Lora Bold        Heading/H2   22/30 Bold
+   Heading/H3         18/26 SemiBold         Heading/H4   16/24 SemiBold
+   Body/Large         16/24 Regular          Body/Default 14/20 Regular
+   Body/Medium        14/20 Medium           Body/Strong  14/20 SemiBold
+   Body/Small         13/18 Regular          Label/Field  13/18 SemiBold
+   Caption            12/16 Medium|SemiBold  Overline     11/14 Bold, uppercase, +8% tracking
+   KPI/Value          28/34 Bold             Button       15/20 (L) · 14/20 (M) SemiBold */
+
+@layer base {
+  body {
+    background: var(--neutral-bg);
+    color: var(--text-primary);
   }
-}
-
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
 }
