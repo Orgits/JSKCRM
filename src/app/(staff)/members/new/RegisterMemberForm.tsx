@@ -4,7 +4,8 @@ import { useState, type ReactNode } from "react";
 import Link from "next/link";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { CircleCheck, Mail, Smartphone, UserPlus } from "lucide-react";
+import { CircleCheck, FileText, Mail, Printer, Smartphone, UserPlus, Users } from "lucide-react";
+import { Badge } from "@/components/ui/Badge";
 import { Button, buttonClasses } from "@/components/ui/Button";
 import { Card, CardHeader } from "@/components/ui/Card";
 import { Checkbox } from "@/components/ui/Checkbox";
@@ -13,7 +14,9 @@ import { Select } from "@/components/ui/Select";
 import { TextField } from "@/components/ui/TextField";
 import { UploadTile } from "@/components/ui/UploadTile";
 import { iconProps } from "@/components/ui/icon";
-import { formatMobile, maskAadhaar } from "@/lib/format";
+import { registrationFees } from "@/lib/fees";
+import { formatDate, formatINR, formatMobile, formatTime, maskAadhaar } from "@/lib/format";
+import { currentStaff } from "@/lib/mock/staff";
 import { nextMemberNumber } from "@/lib/mock/dashboard";
 import { INDIAN_STATES } from "@/lib/states";
 import {
@@ -49,7 +52,16 @@ const documents = [
 ] as const;
 
 /** What the success screen shows. Holds no raw Aadhaar. */
-type Registered = { memberId: string; name: string; mobile: string; aadhaarMasked: string };
+type Registered = {
+  memberId: string;
+  name: string;
+  mobile: string;
+  aadhaarMasked: string;
+  shares: number;
+  /** ISO timestamp of registration */
+  at: string;
+  receiptNo: string;
+};
 
 function Section({
   title,
@@ -105,51 +117,103 @@ export function RegisterMemberForm() {
   async function onSubmit(values: MemberRegistration) {
     // Mock: no members API yet. Never log or persist the raw Aadhaar number.
     await new Promise((r) => setTimeout(r, 700));
+    const at = new Date();
+    const ym = `${at.getFullYear()}-${String(at.getMonth() + 1).padStart(2, "0")}`;
     setRegistered({
       memberId: `JSK-M-${String(memberNumber).padStart(4, "0")}`,
       name: values.fullName,
       mobile: formatMobile(values.mobile),
       aadhaarMasked: maskAadhaar(values.aadhaar),
+      shares: values.shares,
+      at: at.toISOString(),
+      receiptNo: `RCPT-${ym}-${String(memberNumber).padStart(4, "0")}`,
     });
     setMemberNumber((n) => n + 1);
     window.scrollTo({ top: 0 });
   }
 
   if (registered) {
+    const fees = registrationFees(registered.shares);
     return (
-      <Card className="flex flex-col items-center gap-5 px-6 py-10 text-center">
-        <span className="flex size-14 items-center justify-center rounded-full bg-success-50 text-success-600">
-          <CircleCheck size={28} strokeWidth={1.6} aria-hidden />
+      <Card className="mx-auto flex w-full max-w-2xl flex-col items-center gap-6 px-5 py-8 text-center sm:px-10 sm:py-10 print:border-0 print:shadow-none">
+        <span className="flex size-16 items-center justify-center rounded-full bg-success-50 text-success-600 ring-8 ring-success-50/60 print:hidden">
+          <CircleCheck size={32} strokeWidth={1.6} aria-hidden />
         </span>
-        <div className="flex flex-col gap-1">
-          <h2 className="text-[22px] leading-[30px] font-bold text-text-primary">Member registered</h2>
+        <div className="flex flex-col gap-1.5">
+          <h2 className="text-[28px] leading-9 font-bold text-text-primary">Member registered successfully</h2>
           <p className="text-sm leading-5 text-text-secondary">
-            {registered.name} has been added to the society register.
+            {registered.name} has been added to the register. Membership becomes active once the
+            managing committee approves it.
           </p>
         </div>
-        <dl className="grid w-full max-w-md grid-cols-[auto_1fr] gap-x-6 gap-y-2 rounded-control border border-neutral-border bg-neutral-subtle p-4 text-left text-sm leading-5">
-          <dt className="text-text-secondary">Member ID</dt>
-          <dd className="font-semibold text-text-primary">{registered.memberId}</dd>
-          <dt className="text-text-secondary">Mobile</dt>
-          <dd className="text-text-primary">{registered.mobile}</dd>
-          <dt className="text-text-secondary">Aadhaar</dt>
-          <dd className="text-text-primary tabular-nums">{registered.aadhaarMasked}</dd>
-        </dl>
-        <div className="flex flex-wrap justify-center gap-3">
+
+        <div className="grid w-full gap-3 text-left sm:grid-cols-2">
+          <div className="flex flex-col gap-0.5 rounded-control border border-brand-100 bg-brand-50 px-4 py-3.5">
+            <span className="text-xs leading-4 text-text-secondary">Member ID</span>
+            <span className="text-[22px] leading-[30px] font-bold text-brand-700">{registered.memberId}</span>
+            <span className="text-xs leading-4 text-text-muted">
+              {registered.mobile} · Aadhaar {registered.aadhaarMasked}
+            </span>
+          </div>
+          <div className="flex flex-col items-start gap-1.5 rounded-control border border-neutral-border bg-neutral-subtle px-4 py-3.5">
+            <span className="text-xs leading-4 text-text-secondary">Membership status</span>
+            <Badge tone="info" dot>
+              Pending committee approval
+            </Badge>
+            <span className="text-xs leading-4 text-text-muted">KYC documents to be verified in person</span>
+          </div>
+        </div>
+
+        <section
+          aria-label="Fee receipt"
+          className="flex w-full flex-col gap-2.5 rounded-control border border-dashed border-neutral-border-strong bg-neutral-subtle px-5 py-4 text-left"
+        >
+          <div className="flex items-center justify-between gap-3">
+            <h3 className="flex items-center gap-2 text-sm leading-5 font-semibold text-text-primary">
+              <FileText size={18} strokeWidth={1.6} aria-hidden className="text-text-secondary" />
+              Fee receipt
+            </h3>
+            <span className="text-xs leading-4 font-semibold text-text-secondary">{registered.receiptNo}</span>
+          </div>
+          <p className="text-xs leading-4 text-text-muted">
+            {formatDate(registered.at)}, {formatTime(registered.at)} · Collected by {currentStaff.name}
+          </p>
+          <dl className="flex flex-col gap-2 border-t border-neutral-border pt-2.5 text-sm leading-5">
+            {fees.lines.map((l) => (
+              <div key={l.label} className="flex justify-between gap-4">
+                <dt className="text-text-secondary">{l.label}</dt>
+                <dd className="font-medium text-text-primary tabular-nums">{formatINR(l.amount)}</dd>
+              </div>
+            ))}
+            <div className="flex items-center justify-between gap-4 border-t border-neutral-border pt-2.5">
+              <dt className="font-semibold text-text-primary">Total collected</dt>
+              <dd className="text-[22px] leading-[30px] font-bold text-text-primary tabular-nums">{formatINR(fees.total)}</dd>
+            </div>
+          </dl>
+        </section>
+
+        <div className="grid w-full gap-3 sm:grid-cols-2 print:hidden">
+          <Button onClick={() => window.print()} leadingIcon={<Printer {...iconProps} />}>
+            Print receipt
+          </Button>
           <Button
             variant="secondary"
-            size="md"
             onClick={() => {
               reset();
               setRegistered(null);
             }}
+            leadingIcon={<UserPlus {...iconProps} />}
           >
             Register another member
           </Button>
-          <Link href="/dashboard" className={buttonClasses({ size: "md" })}>
-            Go to dashboard
-          </Link>
         </div>
+        <Link
+          href="/members"
+          className="inline-flex items-center gap-1.5 text-sm leading-5 font-semibold text-brand-600 hover:underline print:hidden"
+        >
+          <Users size={16} strokeWidth={1.6} aria-hidden />
+          Back to members
+        </Link>
       </Card>
     );
   }

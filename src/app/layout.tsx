@@ -1,7 +1,7 @@
-// Put this file at: src/app/layout.tsx
 import type { Metadata } from "next";
 import { DM_Sans, Lora } from "next/font/google";
 import "./globals.css";
+import { society } from "@/lib/society";
 
 const dmSans = DM_Sans({
   subsets: ["latin"],
@@ -19,11 +19,11 @@ const lora = Lora({
 
 export const metadata: Metadata = {
   title: {
-    default: "Jai Shri Krishna Society",
-    template: "%s · Jai Shri Krishna Society",
+    default: society.displayName,
+    template: `%s · ${society.displayName}`,
   },
   description:
-    "Staff console and member portal for Jai Shri Krishna Co-operative Thrift & Credit Society Ltd.",
+    `Staff console and member portal for ${society.legalName}`,
 };
 
 export default function RootLayout({

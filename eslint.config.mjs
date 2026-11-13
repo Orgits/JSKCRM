@@ -12,6 +12,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Figma Plugin API scripts run inside use_figma (top-level await/return), not in the app.
+    "figma/**",
   ]),
 ]);
 

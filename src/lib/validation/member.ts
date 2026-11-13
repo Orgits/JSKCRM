@@ -76,3 +76,28 @@ export const memberRegistrationSchema = z.object({
 
 export type MemberRegistrationInput = z.input<typeof memberRegistrationSchema>;
 export type MemberRegistration = z.output<typeof memberRegistrationSchema>;
+
+/**
+ * Edit member — contact, address, nominee and bank details. Identity and KYC fields (name, DOB,
+ * Aadhaar, PAN) are not editable here: they change only through re-KYC.
+ */
+export const memberEditSchema = z.object({
+  mobile: z.string().trim().regex(MOBILE, "Enter a valid 10-digit mobile number"),
+  email: z.union([z.literal(""), z.email("Enter a valid email")]),
+  occupation: z.string().trim(),
+  addressLine: requiredText("Enter the address"),
+  locality: requiredText("Enter locality / village"),
+  city: requiredText("Enter city"),
+  pinCode: z.string().trim().regex(PIN_CODE, "Enter a valid 6-digit PIN code"),
+  nomineeName: requiredText("Enter nominee's name"),
+  nomineeRelation: requiredText("Enter relation"),
+  bankName: requiredText("Enter bank name"),
+  bankBranch: z.string().trim(),
+  ifsc: z.string().trim().toUpperCase().regex(IFSC, "IFSC looks like SBIN0001234"),
+  /** Blank keeps the account on file; only the last 4 digits are ever shown. */
+  newBankAccount: z.union([z.literal(""), z.string().trim().regex(/^\d{9,18}$/, "Account number is 9–18 digits")]),
+  reason: z.string().trim().min(5, "Note why the details changed (kept in the audit log)"),
+});
+
+export type MemberEditInput = z.input<typeof memberEditSchema>;
+export type MemberEdit = z.output<typeof memberEditSchema>;

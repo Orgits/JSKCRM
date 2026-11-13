@@ -89,3 +89,25 @@ export function maskMobile(mobile: string): string {
 export function maskAadhaar(aadhaar: string): string {
   return `XXXX XXXX ${aadhaar.replace(/\D/g, "").slice(-4)}`;
 }
+
+/** Plain-language date for prose: 12 Mar 2019 (IST). Tables and forms use formatDate. */
+const longDate = new Intl.DateTimeFormat("en-IN", { timeZone: TZ, day: "numeric", month: "short", year: "numeric" });
+export function formatDateLong(value: Date | string): string {
+  return longDate.format(toDate(value));
+}
+
+/** Whole years between a date of birth and `on` (defaults to now). */
+export function ageOn(dateOfBirth: string, on: Date | string = new Date()): number {
+  const dob = toDate(dateOfBirth);
+  const ref = toDate(on);
+  let age = ref.getFullYear() - dob.getFullYear();
+  const beforeBirthday =
+    ref.getMonth() < dob.getMonth() || (ref.getMonth() === dob.getMonth() && ref.getDate() < dob.getDate());
+  if (beforeBirthday) age -= 1;
+  return age;
+}
+
+/** 1 account / 4 accounts */
+export function plural(n: number, one: string, many = `${one}s`): string {
+  return `${formatCount(n)} ${n === 1 ? one : many}`;
+}

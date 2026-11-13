@@ -31,11 +31,15 @@ export const footerNav: NavLink[] = [
 /** TopBar titles for routes that aren't top-level nav items. */
 const pageTitles: Record<string, string> = {
   "/members/new": "Register New Member",
+  "/loans/new": "New Loan Application",
+  "/transactions/new": "Record Payment",
 };
 
 /** Title for the TopBar: exact match first, then the nav section the path sits under. */
 export function titleForPath(pathname: string): string {
   if (pageTitles[pathname]) return pageTitles[pathname];
+  if (/^\/members\/JSK-M-\d{4}\/edit$/.test(pathname)) return "Edit member";
+  if (/^\/members\/JSK-M-\d{4}(\/|$)/.test(pathname)) return "Member profile";
   const section = [...mainNav, ...footerNav].find(
     (n) => pathname === n.href || pathname.startsWith(`${n.href}/`),
   );

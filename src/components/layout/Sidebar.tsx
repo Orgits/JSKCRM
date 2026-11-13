@@ -3,6 +3,7 @@ import { LogOut } from "lucide-react";
 import { NavItem } from "@/components/ui/NavItem";
 import { iconProps } from "@/components/ui/icon";
 import { footerNav, mainNav, type NavLink } from "./nav";
+import { society } from "@/lib/society";
 
 function NavList({ items, label }: { items: NavLink[]; label?: string }) {
   return (
@@ -35,14 +36,14 @@ export function SidebarContent() {
           aria-hidden
           className="flex size-10 shrink-0 items-center justify-center rounded-control bg-accent-500 font-serif text-sm font-bold text-text-inverse"
         >
-          JSK
+          {society.monogram}
         </span>
         <span className="flex min-w-0 flex-col">
           <span className="truncate font-serif text-base leading-5 font-semibold text-text-inverse">
-            Jai Shri Krishna
+            {society.shortName}
           </span>
           <span className="truncate text-[11px] leading-[14px] text-sidebar-text">
-            Co-op Thrift &amp; Credit Society
+            {society.tagline}
           </span>
         </span>
       </Link>
@@ -68,7 +69,7 @@ export function SidebarContent() {
 /** Desktop sidebar — 264px, sticky, navy gradient. Hidden below lg (see MobileNav). */
 export function Sidebar() {
   return (
-    <aside className="sticky top-0 hidden h-screen w-66 shrink-0 lg:block">
+    <aside className="sticky top-0 hidden h-screen w-66 shrink-0 lg:block print:hidden!">
       <SidebarContent />
     </aside>
   );

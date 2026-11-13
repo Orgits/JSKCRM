@@ -22,9 +22,28 @@ Figma: https://www.figma.com/design/ldD74TQj2LSQjkHHZvo6WH
 | Member Login | 3-227 | `src/app/(public)/member-login/page.tsx` |
 | Dashboard | 6-120 | `src/app/(staff)/dashboard/page.tsx` |
 | Members — Register New Member | 11-335 | `src/app/(staff)/members/new/page.tsx` |
+| Members — Registration Successful | 27-1469 | success state in `members/new/RegisterMemberForm.tsx` |
 | Members — List | 23-944 | `src/app/(staff)/members/page.tsx` (+ `MembersView.tsx`) |
-| Member Profile — Overview | 24-1126 | not built yet |
-| Member Profile — Passbook | 26-1304 | not built yet |
+| Member Profile — Overview | 24-1126 | `src/app/(staff)/members/[memberId]/page.tsx` (header + tabs in `layout.tsx`) |
+| Member Profile — Passbook | 26-1304 | `src/app/(staff)/members/[memberId]/passbook/page.tsx` (+ `Passbook.tsx`) |
+
+Built in code ahead of their Figma frames (frames are scripted in `figma/build-remaining-screens.js`,
+section "07 · Loans, Deposits, Transactions, Reports & Settings" — not yet run; add node IDs here once it is):
+
+| Frame (to be created) | Route / file |
+|---|---|
+| Loans — List | `src/app/(staff)/loans/page.tsx` (+ `LoansView.tsx`) |
+| Loans — New Application | `src/app/(staff)/loans/new/page.tsx` (+ `NewLoanForm.tsx`, reads `?member=`) |
+| Deposits | `src/app/(staff)/deposits/page.tsx` (+ `DepositsView.tsx`) |
+| Transactions — Ledger | `src/app/(staff)/transactions/page.tsx` (+ `TransactionsView.tsx`) |
+| Transactions — Record Payment | `src/app/(staff)/transactions/new/page.tsx` (+ `RecordPaymentForm.tsx`, reads `?member=&type=deposit\|withdrawal\|emi`) |
+| Reports | `src/app/(staff)/reports/page.tsx` (+ `ReportDownloads.tsx`) |
+| Settings | `src/app/(staff)/settings/page.tsx` (+ `SettingsForm.tsx`) |
+| Help & Support | `src/app/(staff)/help/page.tsx` (+ `SupportTicketForm.tsx`) |
+| Member — Edit | `src/app/(staff)/members/[memberId]/edit/page.tsx` (+ `EditMemberForm.tsx`) |
+
+The "05 · Staff" (31-1747) and "06 · Daily Top-up" (33-2286) sections exist in Figma but aren't mapped
+to code yet.
 
 Frame URL format: `https://www.figma.com/design/ldD74TQj2LSQjkHHZvo6WH?node-id=<node>`
 
@@ -33,6 +52,8 @@ Frame URL format: `https://www.figma.com/design/ldD74TQj2LSQjkHHZvo6WH?node-id=<
   account has a small monthly MCP call limit, so don't re-fetch or screenshot repeatedly.
 - Build shared components first (Design System frame), then pages that use them.
 - Figma output is a reference, not final code: convert it to our components and Tailwind token classes.
+- The Starter plan's MCP cap can run out after a handful of calls. Batch a whole screen (or several)
+  into one `use_figma` script, keep scripts in `figma/` so they can be re-run, and skip extra screenshots.
 
 ## Code rules
 - Never hard-code hex colours. Use token classes (`bg-brand-600`, `text-text-secondary`,
@@ -42,13 +63,20 @@ Frame URL format: `https://www.figma.com/design/ldD74TQj2LSQjkHHZvo6WH?node-id=<
 - Staff pages live under `src/app/(staff)/` and share `src/app/(staff)/layout.tsx`,
   which renders `Sidebar` (264px, navy gradient) + `TopBar` (72px) from `src/components/layout/`.
 - Use `next/link` for navigation; active sidebar item comes from `usePathname()`.
+- Page headings use `PageHeader` (`components/layout`); list pages use `FilterSelect`, `usePagination` +
+  `Pagination` (`components/ui`). Pages that read search params wrap the client form in `<Suspense>`.
+- TopBar titles for sub-pages (e.g. `/loans/new`) go in `pageTitles` in `components/layout/nav.ts`.
 - Figma component → code component (in `src/components/ui/`):
   - Button (Type: Primary | Secondary | Ghost | Accent; Size: Large 48px | Medium 40px) → `Button`
   - Input (State: Default | Focused | Filled | Error | Read-only; label, helper, leading/trailing icon) → `TextField`
   - Input with chevron → `Select` (`size="md"` gives the 40px toolbar height, default 44px); Checkbox → `Checkbox`; Radio Option → `RadioOption`
   - Badge (Tone: Success | Warning | Danger | Info | Neutral | Brand) → `Badge`
   - Nav Item → `NavItem`; KPI Card → `KpiCard`; Document Upload (Empty | Uploaded) → `UploadTile`
+  - Tab → `Tabs` (route tabs); member initials → `Avatar`
 - Required field labels end with a red `*` (`text-danger-600`).
+- The society's name lives only in `src/lib/society.ts` — never hard-code it in components.
+- Dynamic routes: Cache Components is on, so `[param]` routes export `generateStaticParams`
+  (mock IDs for now) and call `notFound()` for unknown values. Read params with `await params`.
 - Mock data lives in `src/lib/mock/` until the backend APIs are connected.
 
 ## Indian formats & validation (zod)
@@ -70,12 +98,19 @@ src/
     (auth)/login/page.tsx, (auth)/login/verify-otp/page.tsx
     (public)/member-login/page.tsx
     (staff)/layout.tsx, (staff)/dashboard/page.tsx, (staff)/members/page.tsx, (staff)/members/new/page.tsx
+    (staff)/members/[memberId]/layout.tsx, page.tsx, passbook/page.tsx, edit/page.tsx
+    (staff)/loans/, loans/new/, deposits/, transactions/, transactions/new/, reports/, settings/, help/
   components/
-    ui/        Button, TextField, Select, Checkbox, RadioOption, Badge, KpiCard, NavItem, UploadTile
+    ui/        Button, TextField, Select, Checkbox, RadioOption, Badge, KpiCard, NavItem, UploadTile,
+               Tabs, Avatar
     layout/    Sidebar, TopBar, BrandPanel (login left panel)
   lib/
-    format.ts  (currency/date helpers)
+    format.ts  (currency/date helpers), loan.ts (loan products, EMI maths)
     csv.ts     (client-side CSV download)
-    validation/member.ts  (zod schema for registration)
-    mock/      (sample members, loans, transactions)
+    society.ts (society name), fees.ts (admission fees for the receipt)
+    validation/member.ts  (registration + edit schemas), loan.ts, payment.ts
+    mock/      members.ts (member register — source of truth for the list),
+               member-profiles.ts (profile details, deposit accounts, loans, guarantees, passbooks),
+               transactions.ts (ledger), dashboard.ts, staff.ts
+figma/       use_figma build scripts (not part of the app; ignored by ESLint)
 ```

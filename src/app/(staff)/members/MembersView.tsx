@@ -314,7 +314,12 @@ function MemberRow({
           </span>
           <div className="min-w-0">
             <div className="flex items-center gap-2">
-              <span className="truncate text-sm leading-5 font-semibold text-brand-700">{m.name}</span>
+              <Link
+                href={`/members/${m.id}`}
+                className="truncate text-sm leading-5 font-semibold text-brand-700 outline-none hover:underline focus-visible:underline"
+              >
+                {m.name}
+              </Link>
               {age < 7 && (
                 <Badge tone="brand" dot>
                   New
@@ -368,7 +373,7 @@ function MemberRow({
         </Badge>
       </td>
       <td className="py-3 pr-5 pl-2">
-        {/* TODO: row menu (view profile, record deposit…) once the profile screens exist. */}
+        {/* TODO: row menu (record deposit, new loan…) once those modules exist. Profile: click the name. */}
         <button
           type="button"
           aria-label={`More actions for ${m.name}`}

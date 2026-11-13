@@ -1,5 +1,6 @@
 import { BadgeCheck, Landmark, ShieldCheck } from "lucide-react";
 import { iconProps } from "@/components/ui/icon";
+import { society } from "@/lib/society";
 
 export type Audience = "staff" | "member";
 
@@ -47,7 +48,7 @@ export function BrandPanel({ audience }: { audience: Audience }) {
           aria-hidden
           className="flex size-12 items-center justify-center rounded-control bg-accent-500 font-serif text-base font-bold"
         >
-          JSK
+          {society.monogram}
         </span>
         <span className="text-[11px] leading-[14px] font-bold tracking-[0.08em] text-sidebar-text uppercase">
           {c.eyebrow}
@@ -56,7 +57,7 @@ export function BrandPanel({ audience }: { audience: Audience }) {
 
       <div className="relative flex max-w-lg flex-col gap-6">
         <p className="font-serif text-[40px] leading-[48px] font-bold">
-          Jai Shri Krishna
+          {society.shortName}
           <span className="block text-[28px] leading-9 font-semibold text-sidebar-text">
             Co-operative Thrift &amp; Credit Society Ltd.
           </span>
@@ -78,7 +79,7 @@ export function BrandPanel({ audience }: { audience: Audience }) {
       </div>
 
       <p className="relative text-xs leading-4 text-sidebar-text">
-        Jai Shri Krishna Co-operative Thrift &amp; Credit Society Ltd.
+        {society.legalName}
       </p>
     </aside>
   );

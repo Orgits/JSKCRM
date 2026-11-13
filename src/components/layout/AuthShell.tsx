@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { BrandPanel, type Audience } from "./BrandPanel";
+import { society } from "@/lib/society";
 
 /** Split login screen: BrandPanel on the left, a centred form card on the right. */
 export function AuthShell({
@@ -27,10 +28,10 @@ export function AuthShell({
             aria-hidden
             className="flex size-10 items-center justify-center rounded-control bg-accent-500 font-serif text-sm font-bold text-text-inverse"
           >
-            JSK
+            {society.monogram}
           </span>
           <span className="font-serif text-lg leading-6 font-semibold text-text-primary">
-            Jai Shri Krishna Society
+            {society.displayName}
           </span>
         </div>
 

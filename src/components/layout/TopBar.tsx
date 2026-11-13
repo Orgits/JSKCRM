@@ -20,7 +20,7 @@ export function TopBar() {
   const staff = currentStaff;
 
   return (
-    <header className="sticky top-0 z-10 flex h-18 shrink-0 items-center gap-4 border-b border-neutral-border bg-neutral-surface px-4 sm:px-6 lg:px-8">
+    <header className="sticky top-0 z-10 flex h-18 print:hidden shrink-0 items-center gap-4 border-b border-neutral-border bg-neutral-surface px-4 sm:px-6 lg:px-8">
       <MobileNav>
         <SidebarContent />
       </MobileNav>
